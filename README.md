@@ -1,3 +1,5 @@
+An example project for the `laminar-router`: https://github.com/tulz-app/laminar-router
+
 # Running
 
 ## Front-end
