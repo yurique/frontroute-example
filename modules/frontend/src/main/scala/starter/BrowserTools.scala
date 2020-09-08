@@ -1,19 +1,11 @@
 package starter
 
+import app.tulz.routing.BrowserNavigation
 import org.scalajs.dom
+
 import scala.scalajs.js
 
 object BrowserTools {
-
-  def pushState(statedata: js.Any, title: String, url: String): Unit = {
-    dom.window.history.pushState(statedata, title, url)
-    emitPopStateEvent()
-  }
-
-  def emitPopStateEvent(statedata: js.Any = js.undefined): Unit = {
-    val event = js.Dynamic.newInstance(js.Dynamic.global.Event)("popstate", statedata).asInstanceOf[dom.PopStateEvent]
-    val _ = dom.window.dispatchEvent(event)
-  }
 
   def setParam(paramName: String, paramValue: String): Unit = {
     val updatedParams =
@@ -22,7 +14,7 @@ object BrowserTools {
           case (name, value) => s"${js.URIUtils.encodeURIComponent(name)}=${js.URIUtils.encodeURIComponent(value)}"
         }.mkString("&")
 
-    pushState(null, null, s"${dom.document.location.pathname}?$updatedParams")
+    BrowserNavigation.pushState(null, null, s"${dom.document.location.pathname}?$updatedParams")
   }
 
   private def extractParams(location: dom.Location): Map[String, String] = {

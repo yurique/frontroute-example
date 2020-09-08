@@ -6,7 +6,7 @@ object Settings {
   object versions {
     val scala = "2.13.3"
     val laminar = "0.10.2"
-    val `laminar-router` = "0.10.0"
+    val `laminar-router` = "0.10.1"
     val scribe = "2.7.12"
   }
 

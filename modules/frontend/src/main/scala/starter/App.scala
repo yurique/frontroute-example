@@ -74,14 +74,14 @@ object App {
       )
 
     val container = document.getElementById("app-container")
-    var _ =
+    val _ =
       render(
         container,
         PageChrome(currentRender.signal)
       )
 
-    runRoute(route, new BrowserRouteLocationProvider).foreach(_())(unsafeWindowOwner)
-    BrowserTools.emitPopStateEvent()
+    runRoute(route, new BrowserRouteLocationProvider(windowEvents.onPopState)).foreach(_())(unsafeWindowOwner)
+    BrowserNavigation.emitPopStateEvent()
     val _ = setInterval(3.seconds) {
       counter = counter + 1
       someVar.writer.onNext(s"this is an updated value inside the var: $counter")
