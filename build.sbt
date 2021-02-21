@@ -9,10 +9,8 @@ ThisBuild / scalaVersion := Settings.versions.scala
 
 lazy val frontend =
   (crossProject(JSPlatform).crossType(CrossType.Pure) in file("modules/frontend"))
-    .settings(
-      name := "frontroute-example"
-    )
     .jsSettings(
+      name := "frontend",
       scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
       scalaJSLinkerConfig ~= { _.withESFeatures(_.withUseECMAScript2015(false)) },
       scalaJSUseMainModuleInitializer := true,
@@ -22,4 +20,9 @@ lazy val frontend =
       ))
     )
 
-lazy val root = project.in(file(".")).aggregate(frontend.js)
+lazy val root = project
+  .in(file("."))
+  .settings(
+    name := "frontroute-example"
+  )
+  .aggregate(frontend.js)

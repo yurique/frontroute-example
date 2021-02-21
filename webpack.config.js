@@ -126,7 +126,7 @@ function common(mode) {
 function prod() {
   return {
     entry: [
-      path.resolve(__dirname, `${scalaOutputPath}/frontroute-example-opt/main.js`),
+      path.resolve(__dirname, `${scalaOutputPath}/frontend-opt/main.js`),
     ],
     optimization: {
       minimize: true,
@@ -157,7 +157,7 @@ function dev() {
   return {
     devtool: 'cheap-module-source-map',
     entry: [
-      path.resolve(__dirname, `${scalaOutputPath}/frontroute-example-fastopt/main.js`),
+      path.resolve(__dirname, `${scalaOutputPath}/frontend-fastopt/main.js`),
     ]
   };
 }
