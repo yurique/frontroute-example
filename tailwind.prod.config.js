@@ -12,4 +12,3 @@ const config = _.mergeWith({}, base, {
 });
 
 module.exports = config;
-

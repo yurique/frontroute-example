@@ -11,73 +11,82 @@ object PageWithParams {
   ): HtmlElement = {
     val input1 =
       input(
-        cls := "shadow appearance-none border rounded flex-1 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline",
+        tpe := "text",
+        cls := "shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-blue-300 rounded-md bg-blue-50 text-blue-700 placeholder-blue-400 font-mono",
         value <-- $param1.map(_.getOrElse("")),
         placeholder := "set param-1",
-        inContext { el =>
-          onChange --> { _ =>
-          }
-        }
       )
     val input2 =
       input(
-        cls := "shadow appearance-none border rounded flex-1 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline",
+        tpe := "text",
+        cls := "shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-blue-300 rounded-md bg-blue-50 text-blue-700 placeholder-blue-400 font-mono",
         value <-- $param2.map(_.getOrElse("")),
-        placeholder := "set param-2",
-        inContext { el =>
-          onChange --> { _ =>
-            BrowserTools.setParam("param-2", el.ref.value)
-          }
-        }
+        placeholder := "set param-2"
       )
     div(
       cls := "space-y-10 w-full",
       div(
-        cls := "text-3xl font-bold text-purple-900",
+        cls := "text-3xl font-bold text-indigo-900",
         "I'm a page with params"
       ),
       div(
-        cls := "flex space-x-4 w-1/2",
-        input1,
-        button(
-          cls := "inline-flex justify-center border border-transparent rounded-md focus:outline-none transition ease-in-out duration-150 px-4 py-2 text-sm text-lg text-indigo-900 bg-indigo-200 hover:bg-indigo-300 focus:border-blue-300 focus:shadow-outline-blue active:bg-indigo-400",
-          "set param-1 value",
-          onClick --> { _ =>
-            BrowserTools.setParam("param-1", input1.ref.value)
-          }
+        cls := "flex items-center space-x-4",
+        div(
+          cls := "flex-1",
+          input1
+        ),
+        div(
+          button(
+            cls := "inline-flex items-center px-3 py-2 border border-blue-500 shadow-sm tracking-wide font-medium rounded-md text-blue-100 bg-blue-600 hover:bg-blue-500 hover:text-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500",
+            "update param-1 value",
+            onClick --> { _ =>
+              BrowserTools.setParam("param-1", input1.ref.value)
+            }
+          )
         )
       ),
       div(
-        cls := "flex space-x-4 w-1/2",
-        input2,
-        button(
-          cls := "inline-flex justify-center border border-transparent rounded-md focus:outline-none transition ease-in-out duration-150 px-4 py-2 text-sm text-lg text-indigo-900 bg-indigo-200 hover:bg-indigo-300 focus:border-blue-300 focus:shadow-outline-blue active:bg-indigo-400",
-          "set param-2 value",
-          onClick --> { _ =>
-            BrowserTools.setParam("param-2", input2.ref.value)
-          }
+        cls := "flex items-center space-x-4",
+        div(
+          cls := "flex-1",
+          input2
+        ),
+        div(
+          button(
+            cls := "inline-flex items-center px-3 py-2 border border-blue-500 shadow-sm tracking-wide font-medium rounded-md text-blue-100 bg-blue-600 hover:bg-blue-500 hover:text-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500",
+            "update param-2 value",
+            onClick --> { _ =>
+              BrowserTools.setParam("param-2", input2.ref.value)
+            }
+          )
         )
       ),
       div(
         div(
           cls := "flex space-x-2",
           span("param-1 value:"),
-          span(child.text <-- $param1.map(_.getOrElse("NOT SET")))
+          span(
+            cls := "font-medium text-blue-800",
+            child.text <-- $param1.map(_.getOrElse("NOT SET"))
+          )
         ),
         div(
           cls := "flex space-x-2",
           span("param-2 value:"),
-          span(child.text <-- $param2.map(_.getOrElse("NOT SET")))
+          span(
+            cls := "font-medium text-blue-800",
+            child.text <-- $param2.map(_.getOrElse("NOT SET"))
+          )
         )
       ),
       div(
         cls := "w-full",
         textArea(
-          cls := "w-full bg-purple-800 text-purple-100 p-4 text-xl",
+          cls := "w-full bg-indigo-900 text-indigo-100 p-4 text-xl",
           rows := 20,
           "You can edit me, and I'm staying here even if you change the parameters (and the URL changes)"
         )
-      )      
+      )
     )
   }
 

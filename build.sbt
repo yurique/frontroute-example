@@ -1,27 +1,20 @@
 import sbtcrossproject.CrossPlugin.autoImport.crossProject
 import sbtcrossproject.CrossPlugin.autoImport.CrossType
 
-organization in ThisBuild := "app.tulz"
+organization in ThisBuild := "io.frontroute"
 
-name := "laminar-router-example"
+name := "frontroute-example"
 
-version in ThisBuild := "0.10.1"
+version in ThisBuild := "0.12.0-SNAPSHOT"
 
 scalaVersion in ThisBuild := Settings.versions.scala
 
-scalacOptions in ThisBuild ++= Settings.scalacOptions
-
-addCompilerPlugin(
-  "org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full
-)
-
-addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
-
 lazy val frontend =
   (crossProject(JSPlatform).crossType(CrossType.Pure) in file("modules/frontend"))
-    .disablePlugins(RevolverPlugin)
     .jsSettings(
       scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
+      scalaJSLinkerConfig ~= { _.withESFeatures(_.withUseECMAScript2015(false)) },
+      scalaJSUseMainModuleInitializer := true,
       libraryDependencies ++= Settings.dependencies.value
     )
 

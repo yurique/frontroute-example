@@ -6,7 +6,7 @@ object Page2 {
 
   def apply(): HtmlElement =
     div(
-      cls := "text-3xl font-bold text-purple-900",
+      cls := "text-3xl font-bold text-indigo-900",
       "I'm Page 2"
     )
 

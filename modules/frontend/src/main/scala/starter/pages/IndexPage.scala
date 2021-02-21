@@ -6,7 +6,7 @@ object IndexPage {
 
   def apply(): HtmlElement =
     div(
-      cls := "text-3xl font-bold text-purple-900",
+      cls := "text-3xl font-bold text-indigo-900",
       "I'm the index page"
     )
 

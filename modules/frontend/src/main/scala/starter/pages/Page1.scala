@@ -6,12 +6,20 @@ object Page1 {
 
   def apply(something: String): HtmlElement =
     div(
+      cls := "space-y-4",
       div(
-        cls := "text-3xl font-bold text-purple-900",
+        cls := "text-3xl font-bold text-indigo-900",
         "I'm Page 1"
       ),
       div(
-        s"Here's something: $something"
+        cls := "flex space-x-4",
+        div(
+          s"Here's something:"
+        ),
+        div(
+          cls := "font-medium text-blue-800",
+          something
+        )
       ),
       div(
         "Note that this page re-renders everytime `something` changes."

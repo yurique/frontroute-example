@@ -1,12 +1,10 @@
+const webpack = require('webpack');
 const path = require('path');
 const _ = require('lodash');
 
-const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const {
-  CleanWebpackPlugin
-} = require('clean-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin');
 
@@ -16,50 +14,49 @@ const devServerPort = 30290;
 
 const devServer = {
   hot: true,
-  disableHostCheck: true,
-  clientLogLevel: 'none',
-  public: 'http://localhost',
+  injectHot: true,
+  injectClient: true,
+  transportMode: 'ws',
+  public: `http://localhost:${devServerPort}`,
   port: devServerPort,
   historyApiFallback: {
     index: ''
-  }
+  },
+  compress: true
 };
 
-function common(variables, mode) {
+function common(mode) {
   return {
     mode: mode,
     resolve: {
       modules: [
-        "node_modules",
-        path.resolve(__dirname, "node_modules")
+        path.resolve(__dirname, "node_modules"),
+        path.resolve(__dirname, './modules/frontend/src/main/static/stylesheets')
       ],
+      alias: {
+        'frontend-config': (mode === 'production') ?
+          path.resolve(__dirname, './modules/frontend-config/prod') :
+          path.resolve(__dirname, './modules/frontend-config/dev')
+      }
     },
     output: {
       publicPath: '/',
-      filename: '[name].[hash].js',
-      library: 'app',
-      libraryTarget: 'var'
+      path: path.resolve(__dirname, 'dist'),
+      filename: '[name].bundle.[contenthash].js'
     },
-    entry: [      
-      path.resolve(__dirname, './modules/frontend/src/static/stylesheets/main.css')
-    ],
     module: {
-      rules: [{
-          test: /\.js$/,
-          use: [{
-            loader: "scalajs-friendly-source-map-loader",
-            options: {
-              name: '[name].[contenthash:8].[ext]',
-              skipFileURLWarnings: true, // or false, default is true
-              bundleHttp: true, // or false, default is true,
-              cachePath: ".scala-js-sources", // cache dir name, exclude in .gitignore
-              noisyCache: false, // whether http cache changes are output
-              useCache: true, // false => remove any http cache processing
-            }
-          }],
-          enforce: "pre",
-          include: [scalaOutputPath],
-        },
+      rules: [
+        // {
+        //   test: /\.js$/,
+        //   enforce: 'pre',
+        //   use: [{
+        //     // loader: 'scalajs-friendly-source-map-loader',
+        //     options: {
+        //       name: '[name].[contenthash:8].[ext]',
+        //       bundleHttp: false
+        //     }
+        //   }]
+        // },
         {
           test: /\.js$/,
           use: ["source-map-loader"],
@@ -69,25 +66,8 @@ function common(variables, mode) {
         },
         {
           test: /\.css$/,
-          use: [{
-              loader: ExtractCssChunks.loader,
-              options: {
-                filename: '[name].[contenthash:8].[ext]'
-              }
-            },
-            {
-              loader: 'css-loader'
-            },
-            {
-              loader: "postcss-loader",
-              options: {
-                config: {
-                  path: path.resolve(__dirname, './postcss.config.js')
-                }
-              }
-            }
-          ]
-        },        
+          use: ['style-loader', 'css-loader', 'postcss-loader'],
+        },
         {
           test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
           use: [{
@@ -118,28 +98,23 @@ function common(variables, mode) {
     },
     plugins: [
       new HtmlWebpackPlugin({
-        filename: 'index.html',
-        template: './modules/frontend/src/static/html/index.html.ejs',
+        template: './modules/frontend/src/main/static/html/index.html.ejs',
         minify: false,
         inject: 'head',
-        config: variables
-      }),
-
-      new ExtractCssChunks({
-        filename: '[name].[hash].css',
-        chunkFilename: '[id].css'
+        mode: mode,
+        scriptLoading: 'defer'
       }),
       new CopyWebpackPlugin({
         patterns: [{
-            from: './modules/frontend/src/static/images',
-            to: 'images'
-          },
+          from: './modules/frontend/src/main/static/images',
+          to: 'images'
+        },
           {
-            from: './modules/frontend/src/static/robots.txt',
+            from: './modules/frontend/src/main/static/robots.txt',
             to: '[name].[ext]'
           },
           {
-            from: './modules/frontend/src/static/data/*.json',
+            from: './modules/frontend/src/main/static/data/*.json',
             to: '[name].[ext]'
           }
         ]
@@ -148,44 +123,44 @@ function common(variables, mode) {
   }
 }
 
-const dev = {
-  mode: 'development',
-  entry: [
-    path.resolve(__dirname, `${scalaOutputPath}/frontend-fastopt.js`)
-  ],
-  devtool: "cheap-module-eval-source-map"
-};
+function prod() {
+  return {
+    entry: [
+      path.resolve(__dirname, `${scalaOutputPath}/frontend-opt/main.js`),
+    ],
+    optimization: {
+      minimize: true,
+      minimizer: [new TerserPlugin()],
+    },
+    plugins: [
+      new CleanWebpackPlugin(),
+      new CompressionPlugin({
+        test: /\.(js|css|html|svg|json|woff|woff2)$/,
+        deleteOriginalAssets: false,
+      }),
+      new CompressionPlugin({
+        test: /\.(js|css|html|svg|woff|woff2)$/,
+        filename: '[path][base].br',
+        algorithm: 'brotliCompress',
+        compressionOptions: {
+          // zlib’s `level` option matches Brotli’s `BROTLI_PARAM_QUALITY` option.
+          level: 11,
+        },
+        minRatio: 0.8,
+        deleteOriginalAssets: false,
+      })
+    ]
+  }
+}
 
-const prod = {
-  mode: 'production',
-  entry: [
-    path.resolve(__dirname, `${scalaOutputPath}/frontend-opt.js`),
-  ],
-  devtool: 'source-map',
-  optimization: {
-    minimize: true,
-    minimizer: [new TerserPlugin()],
-  },
-  plugins: [
-    new CleanWebpackPlugin(),
-    new CompressionPlugin({
-      test: /\.(js|css|html|svg|json|woff|woff2)$/,
-      deleteOriginalAssets: false,
-    }),
-    new CompressionPlugin({
-      filename: '[path].br[query]',
-      algorithm: 'brotliCompress',
-      test: /\.(js|css|html|svg|woff|woff2)$/,
-      compressionOptions: {
-        // zlib’s `level` option matches Brotli’s `BROTLI_PARAM_QUALITY` option.
-        level: 11,
-      },
-      minRatio: 0.8,
-      deleteOriginalAssets: false,
-    }),
-  ]
-};
-
+function dev() {
+  return {
+    devtool: 'cheap-module-source-map',
+    entry: [
+      path.resolve(__dirname, `${scalaOutputPath}/frontend-fastopt/main.js`),
+    ]
+  };
+}
 
 function customizer(objValue, srcValue) {
   if (_.isArray(objValue)) {
@@ -193,27 +168,51 @@ function customizer(objValue, srcValue) {
   }
 }
 
-module.exports = function (env) {
+
+function getConfig() {
   switch (process.env.npm_lifecycle_event) {
-    case 'build':
     case 'build:prod':
-      console.log('production build');
-      return _.mergeWith({}, common(require('./variables.prod.js'), 'production'), prod, customizer);
+    case 'build':
+      console.info('production build');
+      return _.mergeWith(
+        {},
+        common('production'),
+        prod(),
+        customizer
+      );
+
     case 'build:dev':
-      console.log('development build');
-      return _.mergeWith({}, common(require('./variables.dev.js'), 'development'), dev, customizer);
+      console.info('development build');
+      return _.mergeWith(
+        {},
+        common('development'),
+        dev(),
+        customizer
+      );
 
     case 'start:prod':
-      console.log('production dev server');
-      return _.mergeWith({}, common(require('./variables.dev.js'), 'production'), prod, {
-        devServer
-      }, customizer);
+      console.info('production dev server');
+      return _.mergeWith(
+        {},
+        common('production'),
+        prod(),
+        {devServer},
+        customizer
+      );
+
     case 'start':
     case 'start:dev':
     default:
-      console.log('development dev server');
-      return _.mergeWith({}, common(require('./variables.dev.js'), 'development'), dev, {
-        devServer
-      }, customizer);
+      console.info('development dev server');
+      return _.mergeWith(
+        {},
+        common('development'),
+        dev(),
+        {devServer},
+        customizer
+      );
   }
 }
+
+const config = getConfig()
+module.exports = config

@@ -4,28 +4,11 @@ import sbt._
 object Settings {
 
   object versions {
-    val scala = "2.13.3"
-    val laminar = "0.10.2"
-    val `laminar-router` = "0.10.1"
-    val scribe = "2.7.12"
+    val scala = "2.13.4"
+    val laminar = "0.12.0-SNAPSHOT"
+    val frontroute = "0.12.0-SNAPSHOT"
+    val scribe = "3.3.3"
   }
-
-  val scalacOptions = Seq(
-    "-target:jvm-1.8",
-    "-unchecked",
-    "-deprecation",
-    "-feature",
-    "-Xlint:nullary-unit,inaccessible,infer-any,missing-interpolator,private-shadow,type-parameter-shadow,poly-implicit-overload,option-implicit,delayedinit-select,stars-align",
-    "-Xcheckinit",
-    "-language:higherKinds",
-    "-language:implicitConversions",
-    "-Ywarn-value-discard",
-    // for Scala 2.13 only
-    "-Ymacro-annotations",
-    // ---
-    "-encoding",
-    "utf8"
-  )
 
   object libs {
 
@@ -35,9 +18,9 @@ object Settings {
       )
     }
 
-    val `laminar-router`: Def.Initialize[Seq[ModuleID]] = Def.setting {
+    val frontroute: Def.Initialize[Seq[ModuleID]] = Def.setting {
       Seq(
-        "app.tulz" %%% "laminar-router" % versions.`laminar-router`
+        "io.frontroute" %%% "frontroute" % versions.frontroute
       )
     }
 
@@ -53,7 +36,7 @@ object Settings {
     Seq.concat(
       libs.scribe.value,
       libs.laminar.value,
-      libs.`laminar-router`.value
+      libs.frontroute.value
     )
   }
 

@@ -2,20 +2,20 @@ package starter.components
 
 import com.raquo.laminar.api.L._
 
-object PageChrome {
+object PageLayout {
 
   private def navLink(where: String, mods: Mod[HtmlElement]*) =
-    Link(
-      where,
+    a(
+      href := where,
       cls := "hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700",
       mods
     )
 
   def apply($child: Signal[Element]): HtmlElement =
     div(
-      cls := "container mx-auto",
+      cls := "container mx-auto mt-4",
       div(
-        cls := "px-2 pt-2 pb-3 bg-gray-800 flex items-baseline",
+        cls := "px-4 py-4  bg-gray-800 flex items-baseline space-x-8",
         navLink(
           "/index",
           cls := "text-gray-300",
