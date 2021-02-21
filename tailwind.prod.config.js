@@ -5,7 +5,7 @@ const config = _.mergeWith({}, base, {
   purge: {
     enabled: true,
     content: [
-      './modules/frontend/.js/target/scala-2.13/*-opt.js',
+      './modules/frontend/.js/target/scala-2.13/frontroute-example-opt/*.js',
       './modules/frontend/src/static/**/*.html',
     ]
   },
