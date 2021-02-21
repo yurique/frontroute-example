@@ -5,8 +5,8 @@ object Settings {
 
   object versions {
     val scala = "2.13.4"
-    val laminar = "0.12.0-SNAPSHOT"
-    val frontroute = "0.12.0-SNAPSHOT"
+    val laminar = "0.12.0-RC1"
+    val frontroute = "0.12.0-RC1"
     val scribe = "3.3.3"
   }
 
