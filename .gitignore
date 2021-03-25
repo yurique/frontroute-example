@@ -12,3 +12,7 @@ target/
 /.scala-js-sources/
 /yarn-error.log
 .DS_Store
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+.pnp.js

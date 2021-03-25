@@ -1,15 +1,16 @@
-const webpack = require('webpack');
 const path = require('path');
 const _ = require('lodash');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin');
 
 const scalaOutputPath = path.resolve(__dirname, './modules/frontend/.js/target/scala-2.13');
 
+const devServerHost = '127.0.0.1';
 const devServerPort = 30290;
 
 const devServer = {
@@ -18,21 +19,25 @@ const devServer = {
   injectClient: true,
   transportMode: 'ws',
   public: `http://localhost:${devServerPort}`,
+  host: devServerHost,
   port: devServerPort,
   historyApiFallback: {
     index: ''
   },
-  compress: true
+  firewall: false,
+  client: {
+    host: devServerHost,
+    port: devServerPort,
+  }
 };
 
 function common(mode) {
   return {
     mode: mode,
+    entry: [
+      path.resolve(__dirname, './modules/frontend/src/main/static/stylesheets/main.css'),
+    ],
     resolve: {
-      modules: [
-        path.resolve(__dirname, "node_modules"),
-        path.resolve(__dirname, './modules/frontend/src/main/static/stylesheets')
-      ],
       alias: {
         'frontend-config': (mode === 'production') ?
           path.resolve(__dirname, './modules/frontend-config/prod') :
@@ -46,54 +51,14 @@ function common(mode) {
     },
     module: {
       rules: [
-        // {
-        //   test: /\.js$/,
-        //   enforce: 'pre',
-        //   use: [{
-        //     // loader: 'scalajs-friendly-source-map-loader',
-        //     options: {
-        //       name: '[name].[contenthash:8].[ext]',
-        //       bundleHttp: false
-        //     }
-        //   }]
-        // },
         {
-          test: /\.js$/,
-          use: ["source-map-loader"],
-          enforce: "pre",
-          // does not handle scala.js issued https: remote resources
-          exclude: [/node_modules/, scalaOutputPath],
+          test: /\.css$/i,
+          use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
         },
         {
-          test: /\.css$/,
-          use: ['style-loader', 'css-loader', 'postcss-loader'],
+          test: /\.(png|jpg|woff(2)?|ttf|eot|svg)$/,
+          type: 'asset/resource'
         },
-        {
-          test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-          use: [{
-            loader: 'file-loader',
-            options: {
-              name: '[name].[ext]',
-              outputPath: 'fonts/'
-            }
-          }]
-        },
-        {
-          test: /\.(png|jpg)(\?v=\d+\.\d+\.\d+)?$/,
-          use: [{
-            loader: 'file-loader',
-            options: {
-              name: '[name].[ext]',
-              outputPath: 'images/'
-            }
-          }]
-        },
-        {
-          test: /\.(txt)(\?v=\d+\.\d+\.\d+)?$/,
-          use: [{
-            loader: 'file-loader'
-          }]
-        }
       ]
     },
     plugins: [
@@ -105,17 +70,10 @@ function common(mode) {
         scriptLoading: 'defer'
       }),
       new CopyWebpackPlugin({
-        patterns: [{
-          from: './modules/frontend/src/main/static/images',
-          to: 'images'
-        },
+        patterns: [
           {
-            from: './modules/frontend/src/main/static/robots.txt',
-            to: '[name].[ext]'
-          },
-          {
-            from: './modules/frontend/src/main/static/data/*.json',
-            to: '[name].[ext]'
+            from: './modules/frontend/src/main/public',
+            to: ''
           }
         ]
       })
@@ -123,46 +81,48 @@ function common(mode) {
   }
 }
 
-function prod() {
-  return {
-    entry: [
-      path.resolve(__dirname, `${scalaOutputPath}/frontend-opt/main.js`),
-    ],
-    optimization: {
-      minimize: true,
-      minimizer: [new TerserPlugin()],
-    },
-    plugins: [
-      new CleanWebpackPlugin(),
-      new CompressionPlugin({
-        test: /\.(js|css|html|svg|json|woff|woff2)$/,
-        deleteOriginalAssets: false,
-      }),
-      new CompressionPlugin({
-        test: /\.(js|css|html|svg|woff|woff2)$/,
-        filename: '[path][base].br',
-        algorithm: 'brotliCompress',
-        compressionOptions: {
-          // zlib’s `level` option matches Brotli’s `BROTLI_PARAM_QUALITY` option.
-          level: 11,
-        },
-        minRatio: 0.8,
-        deleteOriginalAssets: false,
-      })
-    ]
-  }
+const prod = {
+  entry: [
+    path.resolve(__dirname, `${scalaOutputPath}/frontend-opt/main.js`),
+  ],
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css',
+    }),
+    new CleanWebpackPlugin(),
+    new CompressionPlugin({
+      test: /\.(js|css|html|svg|json|woff|woff2)$/,
+      deleteOriginalAssets: false,
+    }),
+    new CompressionPlugin({
+      test: /\.(js|css|html|svg|woff|woff2)$/,
+      filename: '[path][base].br',
+      algorithm: 'brotliCompress',
+      compressionOptions: {
+        // zlib’s `level` option matches Brotli’s `BROTLI_PARAM_QUALITY` option.
+        level: 11,
+      },
+      minRatio: 0.8,
+      deleteOriginalAssets: false,
+    })
+  ]
 }
 
-function dev() {
-  return {
-    devtool: 'cheap-module-source-map',
-    entry: [
-      path.resolve(__dirname, `${scalaOutputPath}/frontend-fastopt/main.js`),
-    ]
-  };
+const dev = {
+  devtool: 'cheap-module-source-map',
+  entry: [
+    path.resolve(__dirname, `${scalaOutputPath}/frontend-fastopt/main.js`),
+  ],
+  plugins: [
+    new MiniCssExtractPlugin(),
+  ]
 }
 
-function customizer(objValue, srcValue) {
+const customizer = (objValue, srcValue) => {
   if (_.isArray(objValue)) {
     return objValue.concat(srcValue);
   }
@@ -171,46 +131,20 @@ function customizer(objValue, srcValue) {
 
 function getConfig() {
   switch (process.env.npm_lifecycle_event) {
-    case 'build:prod':
     case 'build':
-      console.info('production build');
-      return _.mergeWith(
-        {},
-        common('production'),
-        prod(),
-        customizer
-      );
+      return _.mergeWith(common('production'), prod, customizer);
 
     case 'build:dev':
-      console.info('development build');
-      return _.mergeWith(
-        {},
-        common('development'),
-        dev(),
-        customizer
-      );
+      return _.mergeWith(common('development'), dev, customizer);
 
     case 'start:prod':
-      console.info('production dev server');
-      return _.mergeWith(
-        {},
-        common('production'),
-        prod(),
-        {devServer},
-        customizer
-      );
+      return _.mergeWith(common('production'), prod, {devServer}, customizer);
 
-    case 'start':
-    case 'start:dev':
+    case 'dev':
+      return _.mergeWith(common('development'), dev, {devServer}, customizer);
+
     default:
-      console.info('development dev server');
-      return _.mergeWith(
-        {},
-        common('development'),
-        dev(),
-        {devServer},
-        customizer
-      );
+      console.error(`Unknown: ${process.env.npm_lifecycle_event}`)
   }
 }
 

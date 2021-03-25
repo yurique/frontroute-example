@@ -1,14 +1,6 @@
 module.exports = {
-  theme: {
-    extend: {
-      fontFamily: {
-        condensed: [
-          'Roboto Condensed'
-        ]
-      }
-    }
-  },
   plugins: [
+    require('@tailwindcss/aspect-ratio'),
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),
   ]

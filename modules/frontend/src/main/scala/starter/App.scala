@@ -5,8 +5,6 @@ import io.frontroute._
 
 object App {
 
-  val mainCss: MainCss.type = MainCss
-
   def main(args: Array[String]): Unit = {
     val _ = documentEvents.onDomContentLoaded.foreach { _ =>
       LinkHandler.install()

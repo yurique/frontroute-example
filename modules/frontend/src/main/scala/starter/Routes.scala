@@ -26,8 +26,8 @@ object Routes {
               render { Page1(something) }
             }
           },
-          path("page-2") {
-            render { Page2() }
+          (path("page-2") & historyState) { state =>
+            render { Page2(state) }
           }
         )
       },
