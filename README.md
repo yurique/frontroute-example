@@ -1,6 +1,6 @@
 # frontroute example
 
-An example project for the `frontroute`: https://github.com/tulz-app/frontroute
+[frontroute](https://github.com/tulz-app/frontroute) + [Laminar](https://github.com/raquo/Laminar) example project.
 
 ## Running
 
@@ -19,7 +19,7 @@ sbt frontendJS/fastLinkJS
 Start the webpack dev server:
 
 ```
-yarn start
+yarn dev
 ```
 
 ## Open in a browser 
@@ -36,16 +36,16 @@ sbt ~frontendJS/fastLinkJS
 
 ## Production build
 
-Build an optimized js for the front-end:
+Build an optimized JS:
 
 ```
 sbt frontendJS/fullLinkJS
 ```
 
-Run the webpack:
+Run webpack:
 
 ```
-yarn run build:prod
+yarn run build
 ```
 
 The front-end assets will be generated into the `dist` folder.
