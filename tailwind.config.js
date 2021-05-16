@@ -7,9 +7,15 @@ module.exports = (api) => {
     mode: 'jit',
     purge: [
       `./modules/frontend/.js/target/scala-${scalaVersion}/frontend-${scalajsMode}/*.js`,
-      './modules/frontend/src/static/**/*.html',
+      './modules/frontend/src/main/static/**/*.html',
     ],
-    corePlugins: {},
+    theme: {
+      extend: {
+        colors: {
+          gray: colors.coolGray,
+        },
+      }
+    },
     plugins: [
       require('@tailwindcss/forms'),
       require('@tailwindcss/typography'),

@@ -1,9 +1,8 @@
 inThisBuild(
   List(
     organization := "io.frontroute",
-    version := "0.12.2",
-    scalaVersion := DependencyVersions.scala,
-    resolvers += Resolver.sonatypeRepo("public")
+    version := "0.13.1",
+    scalaVersion := DependencyVersions.scala
   )
 )
 
@@ -21,9 +20,7 @@ lazy val frontend =
         Dependencies.laminar.value,
         Dependencies.frontroute.value
       ),
-      scalacOptions ~= (_.filterNot(
-        Set("-Wdead-code")
-      ))
+      ScalaOptions.fixOptions
     )
 
 lazy val root = project
