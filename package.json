@@ -9,6 +9,7 @@
     "compression-webpack-plugin": "^7.1.2",
     "concat-with-sourcemaps": "^1.1.0",
     "copy-webpack-plugin": "^8.1.1",
+    "cross-env": "^7.0.3",
     "css-loader": "^5.2.4",
     "cssnano": "^5.0.2",
     "file-loader": "^6.2.0",
@@ -35,9 +36,10 @@
     "defaults"
   ],
   "scripts": {
-    "dev": "TAILWIND_DISABLE_TOUCH=1 DEBUG=1 webpack serve --progress",
+    "dev": "cross-env TAILWIND_DISABLE_TOUCH=1 DEBUG=1 webpack serve --progress",
     "build": "webpack --progress",
     "build:dev": "webpack --progress",
     "start:prod": "webpack serve --progress"
-  }
+  },
+  "dependencies": {}
 }
