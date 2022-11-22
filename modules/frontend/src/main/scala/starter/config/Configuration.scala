@@ -1,13 +1,13 @@
 package starter.config
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSImport
+import scala.scalajs.js.annotation.JSGlobal
 
 object Configuration {
 
   @js.native
-  @JSImport("frontend-config", JSImport.Namespace)
-  private object ConfigGlobalScope extends js.Object {
+  @JSGlobal("window")
+  private[this] object ConfigGlobalScope extends js.Object {
 
     val config: js.Object = js.native
 

@@ -25,13 +25,11 @@ object PageWithTabs {
           val $isCurrentTab = $tab.map(_ == path)
           a(
             href := s"/page-with-tabs/$path",
-            cls := "hover:text-gray-800 bg-gray-100 hover:bg-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-300",
-            cls := "border-b-4 border-transparent",
+            cls := "px-2 bg-gray-50 focus:outline-none focus:text-gray-800 focus:bg-gray-300 border-b-2",
             cls <-- $isCurrentTab.map { isCurrentTab =>
               Seq(
-                "text-gray-900" -> isCurrentTab,
-                "text-gray-700" -> !isCurrentTab,
-                "border-indigo-300" -> isCurrentTab
+                "text-gray-900 border-indigo-300" -> isCurrentTab,
+                "text-gray-800 border-transparent hover:bg-gray-200" -> !isCurrentTab,
               )
             },
             title

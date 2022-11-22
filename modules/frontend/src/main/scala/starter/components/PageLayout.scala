@@ -40,12 +40,12 @@ object PageLayout {
       )
     )
 
-  def apply($child: Element): HtmlElement = div(
+  def apply(mods: Mod[HtmlElement]*): HtmlElement = div(
     cls := "container mx-auto mt-4",
     menu(),
     div(
       cls := "bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10",
-      $child
+      mods
     )
   )
 }

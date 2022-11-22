@@ -6,6 +6,6 @@ object DependencyVersions {
 
   val frontroute = "0.16.1"
 
-  val scribe = "3.10.4"
+  val scribe = "3.10.5"
 
 }

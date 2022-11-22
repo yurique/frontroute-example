@@ -14,7 +14,7 @@ object Page1 {
       div(
         cls := "flex space-x-4",
         div(
-          s"Here's something:"
+          s"Here's `something`:"
         ),
         div(
           cls := "font-medium text-blue-800",

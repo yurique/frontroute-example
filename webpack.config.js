@@ -14,21 +14,18 @@ const devServerHost = '127.0.0.1';
 const devServerPort = 30290;
 
 const devServer = {
-  hot: true,
-  injectHot: true,
-  injectClient: true,
-  transportMode: 'ws',
-  public: `http://localhost:${devServerPort}`,
   host: devServerHost,
   port: devServerPort,
   historyApiFallback: {
     index: ''
   },
-  firewall: false,
-  client: {
-    host: devServerHost,
-    port: devServerPort,
-  }
+  static: {
+    directory: path.resolve(__dirname, 'modules/frontend/dev-config'),
+    staticOptions: {},
+    publicPath: ['/config/'],
+    serveIndex: false,
+    watch: true,
+  },
 };
 
 function common(mode) {
@@ -37,13 +34,6 @@ function common(mode) {
     entry: [
       path.resolve(__dirname, './modules/frontend/src/main/static/stylesheets/main.css'),
     ],
-    resolve: {
-      alias: {
-        'frontend-config': (mode === 'production') ?
-          path.resolve(__dirname, './modules/frontend-config/prod') :
-          path.resolve(__dirname, './modules/frontend-config/dev')
-      }
-    },
     output: {
       publicPath: '/',
       path: path.resolve(__dirname, 'dist'),

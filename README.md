@@ -7,7 +7,7 @@
 Install npm dependencies:
 
 ```
-yarn install
+yarn 
 ```
 
 Build the front-end:

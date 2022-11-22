@@ -46,8 +46,9 @@ object Page2 {
         )
       ),
       div(
-        span("state"),
+        span("State:"),
         div(
+          cls := "font-mono",
           JSON.stringify(state.getOrElse("NO-STATE"))
         )
       )

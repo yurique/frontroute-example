@@ -13,7 +13,7 @@ lazy val frontend =
     .jsSettings(
       name := "frontend",
       scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
-      scalaJSLinkerConfig ~= { _.withESFeatures(_.withUseECMAScript2015(false)) },
+      scalaJSLinkerConfig ~= { _.withESFeatures(_.withESVersion(org.scalajs.linker.interface.ESVersion.ES2015)) },
       scalaJSUseMainModuleInitializer := true,
       libraryDependencies ++= Seq.concat(
         Dependencies.scribe.value,
