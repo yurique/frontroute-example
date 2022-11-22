@@ -4,10 +4,10 @@ import com.raquo.laminar.api.L._
 
 object PageNotFound {
 
-  def apply(): HtmlElement =
+  def apply(path: List[String]): HtmlElement =
     div(
       cls := "text-3xl font-bold text-indigo-900",
-      "Oops, Not Found"
+      s"""Oops, Not Found /${path.mkString("/")}"""
     )
 
 }
