@@ -1,11 +1,11 @@
 object DependencyVersions {
 
-  val scala = "2.13.10"
+  val scala = "3.2.2"
 
-  val laminar = "0.14.5"
+  val laminar = "15.0.1"
 
-  val frontroute = "0.16.1"
+  val frontroute = "0.17.1"
 
-  val scribe = "3.10.5"
+  val scribe = "3.11.1"
 
 }

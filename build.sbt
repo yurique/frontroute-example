@@ -1,7 +1,7 @@
 inThisBuild(
   List(
     organization := "io.frontroute",
-    version := "0.13.1",
+    version := DependencyVersions.frontroute,
     scalaVersion := DependencyVersions.scala
   )
 )

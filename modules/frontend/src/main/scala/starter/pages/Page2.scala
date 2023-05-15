@@ -1,7 +1,7 @@
 package starter.pages
 
 import com.raquo.laminar.api.L._
-import io.frontroute.BrowserNavigation
+import frontroute.BrowserNavigation
 
 import scala.scalajs.js
 import scala.scalajs.js.JSON

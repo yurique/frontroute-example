@@ -1,10 +1,11 @@
 package starter.pages
 
 import com.raquo.laminar.api.L._
+import com.raquo.airstream.core.Signal
 
 object Page1 {
 
-  def apply(something: String): HtmlElement =
+  def apply(something: Signal[String]): HtmlElement =
     div(
       cls := "space-y-4",
       div(
@@ -18,7 +19,7 @@ object Page1 {
         ),
         div(
           cls := "font-medium text-blue-800",
-          something
+          value <-- something,
         )
       ),
       div(

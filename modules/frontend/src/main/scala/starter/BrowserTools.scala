@@ -1,6 +1,6 @@
 package starter
 
-import io.frontroute._
+import frontroute._
 import org.scalajs.dom
 
 object BrowserTools {
