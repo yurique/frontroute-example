@@ -19,25 +19,27 @@ object App {
   def main(args: Array[String]): Unit = {
     val _ = render(
       querySelector("#app"),
-      PageLayout(
-        (pathEnd | path("index")) {
-          IndexPage()
-        },
-        pathPrefix("pages") {
-          firstMatch(
-            (path("page-1")) { Page1(someVar.signal) },
-            (path("page-2") & historyState) { state => Page2(state) }
-          )
-        },
-        pathPrefix("page-with-tabs") {
-          (path(segment) | pathEnd.mapTo("tab-1")).signal { $tab => PageWithTabs($tab) }
-        },
-        path("page-with-params") {
-          (maybeParam("param-1").signal & maybeParam("param-2").signal) { (param1, param2) =>
-            PageWithParams(param1, param2)
-          }
-        },
-        (noneMatched & extractUnmatchedPath) { unmatched => PageNotFound(unmatched) }
+      routes(
+        PageLayout(
+          (pathEnd | path("index")) {
+            IndexPage()
+          },
+          pathPrefix("pages") {
+            firstMatch(
+              (path("page-1")) { Page1(someVar.signal) },
+              (path("page-2") & historyState) { state => Page2(state) }
+            )
+          },
+          pathPrefix("page-with-tabs") {
+            (path(segment) | pathEnd.mapTo("tab-1")).signal { $tab => PageWithTabs($tab) }
+          },
+          path("page-with-params") {
+            (maybeParam("param-1").signal & maybeParam("param-2").signal) { (param1, param2) =>
+              PageWithParams(param1, param2)
+            }
+          },
+          (noneMatched & extractUnmatchedPath) { unmatched => PageNotFound(unmatched) }
+        )
       ).amend(LinkHandler.bind, startTimer)
     )
   }
