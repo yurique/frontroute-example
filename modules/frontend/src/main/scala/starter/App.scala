@@ -1,7 +1,7 @@
 package starter
 
 import com.raquo.laminar.api.L._
-import io.frontroute._
+import frontroute._
 import starter.components.PageLayout
 import org.scalajs.dom.document.querySelector
 import starter.pages._
@@ -25,7 +25,7 @@ object App {
         },
         pathPrefix("pages") {
           firstMatch(
-            (path("page-1") & signal(someVar.signal)) { something => Page1(something) },
+            (path("page-1")) { Page1(someVar.signal) },
             (path("page-2") & historyState) { state => Page2(state) }
           )
         },

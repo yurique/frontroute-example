@@ -4,7 +4,7 @@ import com.raquo.laminar.api.L._
 
 object Page1 {
 
-  def apply(something: String): HtmlElement =
+  def apply(something: Signal[String]): HtmlElement =
     div(
       cls := "space-y-4",
       div(
@@ -18,7 +18,7 @@ object Page1 {
         ),
         div(
           cls := "font-medium text-blue-800",
-          something
+          child.text <-- something
         )
       ),
       div(
